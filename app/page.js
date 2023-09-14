@@ -1,95 +1,36 @@
-import Image from 'next/image'
-import styles from './page.module.css'
-
-export default function Home() {
+"use client"
+import React, { useEffect, useState } from 'react'
+import axios from '@/util/axios'
+import { useRouter } from 'next/navigation'
+// import * as icons from 'react-bootstrap-icons'
+const page = () => {
+  const [sear, setsear] = useState([]);
+    const router=useRouter();
+  const get=()=>{
+    router.push("/movie");
+  }
+  const searchlist=async (s)=>{
+    const res= await axios.get(`search/multi?query=${s}&api_key=0347902185e63b0e511c457b87748526`)
+    console.log(res);
+    setsear(res.data.results);
+  }
+  
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.js</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+    <div>
+      <form>
+        <input onChange={(e)=>searchlist(e.target.value)} type="search" placeholder='search'/>
+      </form>
+      <ul className="list-group">
+      {  
+      sear.map((s)=>( 
+        <li className="list-group-item" key={s.id} onClick={router.push(`/search/${s.id}`)}>{s.name}</li>
+      ))}
+      </ul>
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+      <button onClick={get}>Trending Movies</button>
+      <button onClick={()=>(router.push("/tvShow"))}>Trending Shows</button>
+    </div>
   )
 }
+
+export default page
